@@ -4,24 +4,24 @@
 # Lines starting with # are comments and are ignored.
 # ============================================================
 
-name=Prof. Pin Luarn
+name=Anna Kluge
 
-title1=Top 2% Scientist Worldwide (2020-2026)
+title1=Master’s Student in Marketing Intelligence
 
-title2=2024 National Teaching Award Laureate
+title2=Top Graduate in Market Research & Consumer Psychology | Beta Gamma Sigma Member
 
-expertise=Internet Marketing, AI Applications, Agentic AI
+expertise=Consumer Behavior, Judgment and Decision-Making, Quantitative and Qualitative Research
 
-education=Ph.D. in Industrial Engineering, University of Wisconsin-Madison, USA
+education=M.Sc. in Marketing Intelligence (expected February 2027); B.Sc. in Business Administration – Market Research & Consumer Psychology, Pforzheim University
 
-email=luarn@mail.ntust.edu.tw
-linkedin=https://pse.is/8nn88y
+email=anna.kluge2002@gmail.com
+linkedin=https://www.linkedin.com/in/anna-kluge-943117288?utm_source=share_via&utm_content=profile&utm_medium=member_ios
 
-about1=Prof. Luarn earned his B.S. in Industrial Engineering from Tunghai University,
-about2=and his M.S. and Ph.D. in Industrial Engineering from the University of Wisconsin-Madison.
-about3=Named among the world's top 2% scientists by Stanford University & Elsevier for seven consecutive years (2020-2026).
-about4=Recipient of the 2024 Presidential National Teaching Award, Taiwan
+about1=study how people make decisions, what shapes their preferences, and how they respond to uncertainty.
+about2=In my master’s thesis with S-Payment, I examine what makes consumers willing to use Wero at checkout and when they prefer it over other payment methods.
+about3=For my bachelor’s thesis, I designed and conducted a survey on perceived uncertainty, trust in political institutions, and political attitudes in Germany.
+about4=I enjoy explaining complex ideas and discussing them with others, whether teaching mathematical optimization or representing Pforzheim University on a panel at succeet 2025
 
-phone=+886-2-2737-6754
+phone=+49 123456
 
-location=T2-409, National Taiwan University of Science and Technology, No. 43, Sec. 4, Keelung Rd., Taipei, Taiwan
+location=Pforzheim, Germany
