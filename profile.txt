@@ -17,7 +17,7 @@ education=M.Sc. in Marketing Intelligence (expected February 2027); B.Sc. in Bus
 email=anna.kluge2002@gmail.com
 linkedin=https://www.linkedin.com/in/anna-kluge-943117288?utm_source=share_via&utm_content=profile&utm_medium=member_ios
 
-about1=study how people make decisions, what shapes their preferences, and how they respond to uncertainty.
+about1=I study how people make decisions, what shapes their preferences, and how they respond to uncertainty.
 about2=In my master’s thesis with S-Payment, I examine what makes consumers willing to use Wero at checkout and when they prefer it over other payment methods.
 about3=For my bachelor’s thesis, I designed and conducted a survey on perceived uncertainty, trust in political institutions, and political attitudes in Germany.
 about4=I enjoy explaining complex ideas and discussing them with others, whether teaching mathematical optimization or representing Pforzheim University on a panel at succeet 2025
