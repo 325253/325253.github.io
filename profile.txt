@@ -6,7 +6,7 @@
 
 name=Anna Kluge
 
-title1=Master’s Student in Marketing Intelligence
+title1=Student-ID: 325253
 
 title2=Top Graduate in Market Research & Consumer Psychology | Beta Gamma Sigma Member
 
