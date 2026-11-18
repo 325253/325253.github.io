@@ -1,193 +1,265 @@
 <!DOCTYPE html>
-<html lang="de" class="h-full bg-slate-950">
+<html lang="de" class="h-full bg-[#02040a]">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VisionCraft • Lumina Particle Engine &amp; Motion Controller</title>
-  <!-- Tailwind CSS -->
+  <title>Kosmische Partikelwelt • Gestensteuerung</title>
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons -->
+  <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     body {
       user-select: none;
       -webkit-user-select: none;
       overflow: hidden;
-      background-color: #030712;
+      background-color: #02040a;
+      color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
-    .hud-backdrop {
-      background: rgba(10, 16, 31, 0.78);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+    /* Subtiler kosmischer Nebel-Hintergrund */
+    .space-bg {
+      background: radial-gradient(circle at 50% 50%, rgba(13, 27, 62, 0.35) 0%, rgba(2, 4, 10, 0.95) 100%), #02040a;
+    }
+    /* Hochwertiges Glassmorphism UI */
+    .glass-card {
+      background: rgba(8, 14, 28, 0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.75);
+      box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.85), 0 0 30px rgba(0, 245, 212, 0.05);
     }
-    .cam-frame {
-      box-shadow: 0 0 25px rgba(0, 245, 212, 0.2), 0 20px 35px rgba(0, 0, 0, 0.8);
-      border: 1.5px solid rgba(0, 245, 212, 0.4);
+    .glass-card:hover {
+      border-color: rgba(255, 255, 255, 0.14);
     }
-    .text-glow {
-      text-shadow: 0 0 20px rgba(0, 245, 212, 0.4);
+    /* Sanfter Neon-Glow für Linien und Rahmen */
+    .glow-cyan {
+      box-shadow: 0 0 20px rgba(0, 245, 212, 0.25);
     }
+    /* Fließender Farbverlauf für Akzente */
+    .grad-cosmic {
+      background: linear-gradient(90deg, #00f5d4, #7209b7, #f72585, #ffd166, #00f5d4);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: cosmicShift 10s linear infinite;
+    }
+    @keyframes cosmicShift { to { background-position: 300% 0; } }
   </style>
 </head>
-<body class="h-full w-full relative text-slate-100 font-sans">
+<body class="h-full w-full relative space-bg">
 
-  <!-- Fullscreen Particle Render Canvas -->
-  <canvas id="particleSurface" class="absolute inset-0 w-full h-full block z-0"></canvas>
+  <!-- Fullscreen Cosmic Particle Surface -->
+  <canvas id="cosmicCanvas" class="absolute inset-0 w-full h-full block z-0"></canvas>
 
-  <!-- Top Navigation & Brand Header -->
+  <!-- Kopfzeile (Dezent & Modern) -->
   <header class="absolute top-0 left-0 right-0 z-30 px-6 py-4 flex items-center justify-between pointer-events-none">
     <div class="pointer-events-auto flex items-center space-x-3">
-      <a href="/" class="hud-backdrop px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:border-slate-700 flex items-center space-x-2 transition active:scale-95">
+      <a href="/" class="glass-card px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white flex items-center space-x-2 transition active:scale-95">
         <i data-lucide="arrow-left" class="w-4 h-4 text-emerald-400"></i>
         <span>Studio</span>
       </a>
-      <div class="hud-backdrop px-3.5 py-2 rounded-xl flex items-center space-x-2 text-xs font-semibold">
+      <div class="glass-card px-3.5 py-2 rounded-xl flex items-center space-x-2.5 text-xs font-semibold">
         <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-        <span class="tracking-wide text-slate-200">VisionCraft • Lumina Partikel</span>
-        <span class="text-slate-500 font-mono text-[11px] ml-1">Echtzeit-Tracking</span>
+        <span class="tracking-wider text-slate-100 grad-cosmic text-sm font-bold">Kosmische Partikelwelt</span>
       </div>
     </div>
 
-    <!-- Active Mode Indicator Pill -->
-    <div class="pointer-events-auto hud-backdrop px-4 py-2 rounded-xl hidden sm:flex items-center space-x-2.5 text-xs text-slate-300">
+    <!-- Mittlerer Kurz-Hinweis -->
+    <div class="pointer-events-auto glass-card px-4 py-2 rounded-xl hidden md:flex items-center space-x-2 text-xs text-slate-300">
       <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
-      <span class="font-medium text-slate-200">Faust ballen &amp; öffnen ➔ Form- &amp; Farbwechsel</span>
+      <span>Faust ballen &amp; öffnen ➔ Formwechsel • Distanz zur Kamera steuert Größe</span>
     </div>
 
-    <!-- Fullscreen Toggle Button -->
+    <!-- Rechte Kontroll-Buttons (Tutorial & Vollbild) -->
     <div class="pointer-events-auto flex items-center space-x-2">
-      <button id="fullscreenToggle" class="hud-backdrop p-2.5 rounded-xl text-slate-300 hover:text-white transition active:scale-95" title="Vollbild umschalten">
+      <button id="openTutorialBtn" class="glass-card p-2.5 rounded-xl text-slate-300 hover:text-white transition active:scale-95" title="Anleitung anzeigen">
+        <i data-lucide="help-circle" class="w-4 h-4"></i>
+      </button>
+      <button id="fullscreenToggleBtn" class="glass-card p-2.5 rounded-xl text-slate-300 hover:text-white transition active:scale-95" title="Vollbildmodus">
         <i data-lucide="maximize" class="w-4 h-4"></i>
       </button>
     </div>
   </header>
 
-  <!-- Morphing State Center Banner (Flashes upon gesture activation) -->
-  <div id="shapeMorphBanner" class="fixed top-24 left-1/2 transform -translate-x-1/2 z-40 transition-all duration-300 opacity-0 pointer-events-none scale-90">
-    <div class="hud-backdrop px-5 py-3 rounded-2xl flex items-center space-x-3 border border-cyan-500/40 shadow-2xl">
-      <span id="bannerIcon" class="text-2xl">⭐</span>
+  <!-- Morph-Benachrichtigungsbanner in oberer Mitte -->
+  <div id="morphNotice" class="fixed top-20 left-1/2 transform -translate-x-1/2 z-40 transition-all duration-300 opacity-0 pointer-events-none scale-90">
+    <div class="glass-card px-5 py-3 rounded-2xl flex items-center space-x-3 border border-cyan-500/40 glow-cyan">
+      <span id="morphIcon" class="text-3xl">⭐</span>
       <div>
-        <h4 id="bannerTitle" class="text-xs font-bold text-slate-100 uppercase tracking-wider">Stern aktiviert</h4>
-        <p id="bannerSub" class="text-[11px] text-cyan-400 font-medium">Farbharmonie gewechselt</p>
+        <h4 id="morphTitle" class="text-xs font-bold text-slate-100 uppercase tracking-wider">Stern aktiviert</h4>
+        <p id="morphPalette" class="text-[11px] text-cyan-400 font-medium">Farbharmonie gewechselt</p>
       </div>
     </div>
   </div>
 
-  <!-- Bottom-Left: VisionCraft Biometric HUD Panel -->
-  <aside id="biometricHUD" class="hud-backdrop absolute bottom-5 left-5 z-20 w-80 rounded-2xl p-4 space-y-3.5">
-    <!-- Header with System Clock -->
-    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+  <!-- Kompaktes Statusfeld unten links -->
+  <aside id="statusHUD" class="glass-card absolute bottom-5 left-5 z-20 w-80 rounded-2xl p-4 space-y-3 transition-all duration-300">
+    <!-- Header mit Live-Uhrzeit & Datum -->
+    <div class="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
       <div class="flex items-center space-x-2">
         <i data-lucide="activity" class="w-4 h-4 text-cyan-400"></i>
-        <span class="text-xs font-bold uppercase tracking-wider text-slate-200">Gesten-Status</span>
+        <span class="text-xs font-bold tracking-wider uppercase text-slate-200">Gesten-Status</span>
       </div>
       <div class="flex items-center space-x-1.5 font-mono text-xs text-slate-400">
-        <span id="liveClock" class="font-semibold text-cyan-400">--:--:--</span>
-        <span id="liveDate" class="text-[10px] text-slate-500">----/--/--</span>
+        <span id="hudClock" class="font-bold text-cyan-400">--:--:--</span>
+        <span id="hudDate" class="text-[10px] text-slate-500">----/--/--</span>
       </div>
     </div>
 
-    <!-- Hand State Badge & Openness -->
+    <!-- Erkennung der Steuerhand & Öffnungsgrad -->
     <div class="space-y-1.5">
       <div class="flex items-center justify-between text-xs">
         <span class="text-slate-400 flex items-center space-x-1.5">
           <i data-lucide="hand" class="w-3.5 h-3.5 text-slate-500"></i>
           <span>Steuerhand:</span>
         </span>
-        <span id="handStatusBadge" class="font-mono text-xs font-bold text-slate-400">Suche Hand...</span>
+        <span id="handStateText" class="font-mono text-xs font-bold text-slate-400">Suche Hand...</span>
       </div>
 
-      <!-- Openness Percentage & Bar -->
-      <div class="flex items-center justify-between text-xs pt-1">
+      <!-- Handöffnung in Prozent & Fortschrittsbalken -->
+      <div class="flex items-center justify-between text-xs pt-0.5">
         <span class="text-slate-400">Handöffnung:</span>
-        <span id="opennessValueLabel" class="font-mono font-bold text-cyan-400">--%</span>
+        <span id="opennessText" class="font-mono font-bold text-cyan-400">--%</span>
       </div>
       <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden p-0.5 border border-slate-800">
-        <div id="opennessBarFill" class="h-full rounded-full bg-gradient-to-r from-indigo-500 via-pink-500 to-cyan-400 transition-all duration-100" style="width: 0%"></div>
+        <div id="opennessBar" class="h-full rounded-full bg-gradient-to-r from-indigo-500 via-pink-500 to-cyan-400 transition-all duration-100" style="width: 0%"></div>
       </div>
     </div>
 
-    <!-- Distance / Proximity to Camera (Moving closer shrinks particle range) -->
-    <div class="space-y-1.5 pt-1">
+    <!-- Nähe zur Kamera (Näher = kleiner, weiter weg = größer) -->
+    <div class="space-y-1.5 pt-0.5">
       <div class="flex items-center justify-between text-xs">
         <span class="text-slate-400 flex items-center space-x-1.5">
-          <i data-lucide="scan" class="w-3.5 h-3.5 text-slate-500"></i>
+          <i data-lucide="maximize-2" class="w-3.5 h-3.5 text-slate-500"></i>
           <span>Nähe zur Kamera:</span>
         </span>
-        <span id="proximityStateLabel" class="font-mono text-xs font-bold text-emerald-400">--</span>
+        <span id="proximityText" class="font-mono text-xs font-bold text-emerald-400">--</span>
       </div>
       <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden p-0.5 border border-slate-800">
-        <div id="proximityBarFill" class="h-full rounded-full bg-gradient-to-r from-cyan-400 to-emerald-400 transition-all duration-100" style="width: 50%"></div>
+        <div id="proximityBar" class="h-full rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400 transition-all duration-100" style="width: 50%"></div>
       </div>
+      <p class="text-[10px] text-slate-400 leading-tight">Näher zur Kamera verkleinert • Weiter weg vergrößert</p>
     </div>
 
-    <!-- Active Shape & Palette Info Grid -->
-    <div class="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-slate-800/80">
-      <div class="bg-slate-900/70 p-2 rounded-xl border border-slate-800/60">
-        <span class="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">Form</span>
-        <span id="activeShapeLabel" class="text-xs font-bold text-slate-100 mt-0.5 flex items-center space-x-1 truncate">
+    <!-- Aktive Form & Farbe Grid -->
+    <div class="grid grid-cols-2 gap-2 text-xs pt-1.5 border-t border-slate-800/80">
+      <div class="bg-slate-900/60 p-2 rounded-xl border border-slate-800/60">
+        <span class="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">Aktuelle Form</span>
+        <span id="currentShapeText" class="text-xs font-bold text-slate-100 mt-0.5 flex items-center space-x-1 truncate">
           <span>❤️</span> <span>Herz</span>
         </span>
       </div>
-      <div class="bg-slate-900/70 p-2 rounded-xl border border-slate-800/60">
+      <div class="bg-slate-900/60 p-2 rounded-xl border border-slate-800/60">
         <span class="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">Farbpalette</span>
-        <span id="activePaletteLabel" class="text-xs font-bold text-cyan-300 mt-0.5 block truncate">Cyber Magenta</span>
+        <span id="currentPaletteText" class="text-xs font-bold text-cyan-300 mt-0.5 block truncate">Neon-Nebel</span>
       </div>
-    </div>
-
-    <!-- Behavior Hint Footer -->
-    <div class="text-[11px] text-slate-400 leading-snug pt-1 border-t border-slate-800/60">
-      <span class="text-cyan-300 font-semibold">Interaktion:</span>
-      Faust &rarr; Öffnen wechselt Form &amp; Farbe • Näher an Kamera verkleinert Partikelbereich.
     </div>
   </aside>
 
-  <!-- Bottom-Right: Mirrored Live Webcam Vision Monitor -->
-  <div id="cameraPiP" class="hud-backdrop cam-frame absolute bottom-5 right-5 z-20 w-56 sm:w-64 aspect-video rounded-2xl overflow-hidden relative bg-black">
-    <!-- Live Webcam Video (mirrored) -->
-    <video id="rawVideoElement" playsinline autoplay muted class="absolute inset-0 w-full h-full object-cover z-0" style="transform: scaleX(-1);"></video>
-    <!-- Overlay Skeleton Canvas (transparent, mirrored) -->
-    <canvas id="visionOverlayCanvas" class="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none" style="transform: scaleX(-1);"></canvas>
-    
-    <!-- Top-left overlay badge -->
-    <div class="absolute top-2.5 left-2.5 z-20 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur text-[9px] font-mono font-bold text-cyan-300 border border-white/10 flex items-center space-x-1.5 pointer-events-none">
-      <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
-      <span>HAND TRACKING</span>
+  <!-- Einklappbare Webcam-Vorschau (unten rechts) -->
+  <div id="camContainer" class="absolute bottom-5 right-5 z-20 transition-all duration-300 flex flex-col items-end">
+    <!-- Toggle-Button zum Ein-/Ausklappen -->
+    <button id="toggleCamBtn" class="glass-card mb-2 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white flex items-center space-x-1.5 transition active:scale-95 shadow-lg" title="Webcam-Vorschau ein-/ausklappen">
+      <i id="toggleCamIcon" data-lucide="video" class="w-3.5 h-3.5 text-cyan-400"></i>
+      <span id="toggleCamText">Kamera einklappen</span>
+    </button>
+
+    <!-- Kamera-Vorschau-Box -->
+    <div id="camBox" class="glass-card rounded-2xl overflow-hidden w-56 sm:w-64 aspect-video relative border border-cyan-500/30 glow-cyan transition-all duration-300 bg-black">
+      <!-- Live-Kamerabild (gespiegelt) -->
+      <video id="webcamElement" playsinline autoplay muted class="absolute inset-0 w-full h-full object-cover z-0" style="transform: scaleX(-1);"></video>
+      <!-- Überlagerndes Neon-Skelett Canvas -->
+      <canvas id="skeletonCanvas" class="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none" style="transform: scaleX(-1);"></canvas>
+      
+      <!-- Mini-Indikator oben links -->
+      <div class="absolute top-2.5 left-2.5 z-20 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur text-[9px] font-mono font-bold text-cyan-300 border border-white/10 flex items-center space-x-1.5 pointer-events-none">
+        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+        <span>HAND TRACKING</span>
+      </div>
     </div>
   </div>
 
-  <!-- Loading State Indicator -->
-  <div id="loadingOverlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950/95 space-y-4">
-    <div class="w-12 h-12 border-3 border-cyan-500/20 border-t-cyan-400 rounded-full animate-spin"></div>
+  <!-- Startbildschirm & Onboarding-Modal -->
+  <div id="onboardingModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md transition-opacity duration-300">
+    <div class="glass-card max-w-lg w-full rounded-3xl p-6 sm:p-8 space-y-6 border border-cyan-500/30 shadow-2xl">
+      <div class="text-center space-y-2">
+        <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto text-cyan-400">
+          <i data-lucide="sparkles" class="w-6 h-6"></i>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-black text-slate-100 tracking-wide grad-cosmic">Kosmische Partikelwelt</h2>
+        <p class="text-xs sm:text-sm text-slate-400">Erleben Sie interaktive, schwebende Partikel – gesteuert mit bloßen Händen vor Ihrer Webcam.</p>
+      </div>
+
+      <!-- Gesten-Anleitung -->
+      <div class="space-y-3 text-xs sm:text-sm">
+        <div class="flex items-start space-x-3 bg-slate-900/60 p-3 rounded-2xl border border-slate-800">
+          <span class="text-xl mt-0.5">✊ ➔ 🖐</span>
+          <div>
+            <b class="text-slate-200 block">Form- &amp; Farbwechsel:</b>
+            <span class="text-slate-400">Ballen Sie eine Faust und öffnen Sie die Hand. Wechselt fließend zwischen Herz, Stern, Blume, Schmetterling und Spirale.</span>
+          </div>
+        </div>
+
+        <div class="flex items-start space-x-3 bg-slate-900/60 p-3 rounded-2xl border border-slate-800">
+          <span class="text-xl mt-0.5">🖐</span>
+          <div>
+            <b class="text-slate-200 block">Ausdehnung &amp; Streuung:</b>
+            <span class="text-slate-400">Eine offene Hand lässt die Partikel funkelnd auseinanderströmen; eine geschlossene Faust zieht sie zu einem dichten Kern zusammen.</span>
+          </div>
+        </div>
+
+        <div class="flex items-start space-x-3 bg-slate-900/60 p-3 rounded-2xl border border-slate-800">
+          <span class="text-xl mt-0.5">📐</span>
+          <div>
+            <b class="text-slate-200 block">Distanz zur Kamera:</b>
+            <span class="text-slate-400">Bringen Sie die Hand näher an die Kamera, wird die Form kompakter; bewegen Sie sie weiter weg, wird sie größer.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Start-Button -->
+      <button id="startExperienceBtn" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 via-indigo-500 to-pink-500 hover:opacity-95 text-white font-bold text-sm tracking-wider uppercase transition transform active:scale-98 shadow-xl shadow-cyan-500/20 flex items-center justify-center space-x-2">
+        <span>Partikelwelt betreten</span>
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      </button>
+
+      <p class="text-[11px] text-center text-slate-500">Kamerazugriff erforderlich • Verarbeitung erfolgt vollständig lokal in Ihrem Browser.</p>
+    </div>
+  </div>
+
+  <!-- Ladeindikator beim Initialisieren -->
+  <div id="loadingOverlay" class="fixed inset-0 z-40 hidden flex-col items-center justify-center bg-slate-950/90 backdrop-blur-sm space-y-4">
+    <div class="w-12 h-12 border-4 border-cyan-500/20 border-t-cyan-400 rounded-full animate-spin"></div>
     <div class="text-center space-y-1">
-      <h3 class="text-sm font-bold text-slate-200 tracking-wider uppercase">Lumina Particle Engine wird geladen</h3>
-      <p class="text-xs text-slate-400">Initialisiere MediaPipe Vision Models &amp; Kamera...</p>
+      <h3 class="text-sm font-bold text-slate-100 uppercase tracking-wider">Initialisiere Handtracking</h3>
+      <p class="text-xs text-slate-400">Lade KI-Modelle &amp; starte Webcam...</p>
     </div>
   </div>
 
-  <!-- Main ES6 Application Engine -->
+  <!-- =========================================================================
+       APPLICATION SCRIPTS
+       ========================================================================= -->
   <script type="module">
     import {
       FilesetResolver,
-      HandLandmarker,
-      PoseLandmarker
+      HandLandmarker
     } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14";
 
     /* =========================================================================
-       1. PARAMETRISCHE FORMEN-GENERATOREN (UNIT SPHERE / 2D/3D KURVEN)
+       1. PARAMETRISCHE FORMENGELATOREN FÜR DIE KOSMISCHE PARTIKELWELT
        ========================================================================= */
 
-    // 1. Herz (Mathematische Kardioidenkurve)
-    function generateHeart(t) {
+    // 1. Herz (Kardioidenkurve mit sanftem Puls)
+    function calcHeart(t) {
       const x = 16 * Math.pow(Math.sin(t), 3);
       const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
       return { x: x / 16.5, y: y / 16.5 };
     }
 
-    // 2. Stern (Harmonischer 5-Zacken Stern)
-    function generateStar(t) {
+    // 2. Stern (Kosmischer 5-zackiger Stern)
+    function calcStar(t) {
       const spikes = 5, outerR = 1.0, innerR = 0.42;
       const seg = (t / (Math.PI * 2)) * spikes * 2;
       const idx = Math.floor(seg), frac = seg - idx;
@@ -200,148 +272,150 @@
       return { x: x * 0.95, y: y * 0.95 };
     }
 
-    // 3. Blume (5-Blättrige Rhodonea-Rosettenkurve)
-    function generateFlower(t) {
+    // 3. Blume (5-blättrige Lotus-Rosette)
+    function calcFlower(t) {
       const petals = 5;
-      const r = 0.2 + 0.8 * Math.abs(Math.cos((petals / 2) * t));
+      const r = 0.22 + 0.78 * Math.abs(Math.cos((petals / 2) * t));
       return { x: r * Math.cos(t), y: r * Math.sin(t) };
     }
 
-    // 4. Schmetterling (Schwingende Doppelflügelkurve)
-    function generateButterfly(t, timeSec = 0) {
+    // 4. Schmetterling (Schwingende Doppelflügel)
+    function calcButterfly(t, timeSec = 0) {
       const s = t * 4;
-      const flap = 0.88 + 0.12 * Math.sin(timeSec * 5.5 + t);
+      const wingFlap = 0.88 + 0.12 * Math.sin(timeSec * 5.0 + t);
       const r = Math.exp(Math.sin(s)) - 2 * Math.cos(4 * s) + Math.pow(Math.sin((2 * s - Math.PI) / 24), 5);
       return {
-        x: (r * Math.sin(s) / 4) * flap,
+        x: (r * Math.sin(s) / 4) * wingFlap,
         y: -r * Math.cos(s) / 4 + 0.14
       };
     }
 
-    // 5. Spirale (Galaktische logarithmische Doppelspirale)
-    function generateSpiral(t, timeSec = 0) {
-      const turns = 3.2;
-      const rot = timeSec * 0.5;
+    // 5. Spirale (Galaktischer Nebelwirbel)
+    function calcSpiral(t, timeSec = 0) {
+      const turns = 3.4;
+      const rot = timeSec * 0.35;
       const theta = t * turns + rot;
       const r = 0.08 + (t / (Math.PI * 2)) * 0.92;
       return { x: r * Math.cos(theta), y: r * Math.sin(theta) };
     }
 
-    const SHAPE_CATALOG = [
-      { key: "heart",     name: "Herz",         icon: "❤️", fn: generateHeart },
-      { key: "star",      name: "Stern",        icon: "⭐", fn: generateStar },
-      { key: "flower",    name: "Blume",        icon: "🌸", fn: generateFlower },
-      { key: "butterfly", name: "Schmetterling",icon: "🦋", fn: generateButterfly },
-      { key: "spiral",    name: "Spirale",      icon: "🌀", fn: generateSpiral },
+    const FORMS = [
+      { key: "heart",     name: "Herz",         icon: "❤️", fn: calcHeart },
+      { key: "star",      name: "Stern",        icon: "⭐", fn: calcStar },
+      { key: "flower",    name: "Blume",        icon: "🌸", fn: calcFlower },
+      { key: "butterfly", name: "Schmetterling",icon: "🦋", fn: calcButterfly },
+      { key: "spiral",    name: "Spirale",      icon: "🌀", fn: calcSpiral },
     ];
 
-    const COLOR_PALETTES = [
-      { name: "Cyber Magenta", primary: "#f72585", secondary: "#7209b7" },
-      { name: "Kosmisch Cyan", primary: "#00f5d4", secondary: "#3a86ff" },
-      { name: "Sonnengold",    primary: "#ffd166", secondary: "#ff9f1c" },
-      { name: "Smaragd-Aurora",primary: "#06d6a0", secondary: "#118ab2" },
-      { name: "Polarweiß",     primary: "#ffffff", secondary: "#80ed99" },
+    // Harmonische kosmische Farbpaletten
+    const PALETTES = [
+      { name: "Neon-Nebel",        primary: "#f72585", secondary: "#7209b7", glow: "#b5179e" },
+      { name: "Kosmisches Türkis", primary: "#00f5d4", secondary: "#3a86ff", glow: "#48cae4" },
+      { name: "Sternenstaub",      primary: "#ffd166", secondary: "#ff9f1c", glow: "#fff3b0" },
+      { name: "Smaragd-Aurora",    primary: "#06d6a0", secondary: "#118ab2", glow: "#70e000" },
+      { name: "Polar-Kristall",    primary: "#ffffff", secondary: "#80ed99", glow: "#90e0ef" },
     ];
 
     /* =========================================================================
-       2. EIGENE PARTIKEL-ENGINE (LuminaParticleEngine)
+       2. EIGENE KOSMISCHE PARTIKEL-ENGINE (CosmicParticleEngine)
        ========================================================================= */
-    class LuminaParticleEngine {
-      constructor(canvas, particleCount = 3800) {
+    class CosmicParticleEngine {
+      constructor(canvas, count = 4200) {
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
-        this.particleCount = particleCount;
+        this.count = count;
         this.particles = [];
 
-        for (let i = 0; i < particleCount; i++) {
+        for (let i = 0; i < count; i++) {
           this.particles.push({
             x: Math.random() * window.innerWidth,
             y: Math.random() * window.innerHeight,
             vx: 0,
             vy: 0,
-            t: (i / particleCount) * Math.PI * 2,
+            t: (i / count) * Math.PI * 2,
             scatterX: (Math.random() - 0.5),
             scatterY: (Math.random() - 0.5),
-            baseRadius: 1.4 + Math.random() * 2.2,
-            phase: Math.random() * Math.PI * 2,
+            radius: 1.3 + Math.random() * 2.2,
+            twinklePhase: Math.random() * Math.PI * 2,
           });
         }
 
-        this.shapeIndex = 0;
+        this.formIndex = 0;
         this.paletteIndex = 0;
 
-        // Smooth state interpolation
+        // Geglättete Steuerwerte
         this.openness = 0.5;
         this.distanceScale = 1.0;
 
         this.centerX = window.innerWidth / 2;
         this.centerY = window.innerHeight / 2;
-        this.targetCX = window.innerWidth / 2;
-        this.targetCY = window.innerHeight / 2;
+        this.targetX = window.innerWidth / 2;
+        this.targetY = window.innerHeight / 2;
       }
 
-      setShapeAndPalette(sIdx, pIdx) {
-        this.shapeIndex = (sIdx + SHAPE_CATALOG.length) % SHAPE_CATALOG.length;
-        this.paletteIndex = (pIdx + COLOR_PALETTES.length) % COLOR_PALETTES.length;
+      setFormAndPalette(fIdx, pIdx) {
+        this.formIndex = (fIdx + FORMS.length) % FORMS.length;
+        this.paletteIndex = (pIdx + PALETTES.length) % PALETTES.length;
       }
 
-      next() {
-        this.setShapeAndPalette(this.shapeIndex + 1, this.paletteIndex + 1);
+      nextForm() {
+        this.setFormAndPalette(this.formIndex + 1, this.paletteIndex + 1);
         return {
-          shape: SHAPE_CATALOG[this.shapeIndex],
-          palette: COLOR_PALETTES[this.paletteIndex]
+          form: FORMS[this.formIndex],
+          palette: PALETTES[this.paletteIndex]
         };
       }
 
-      updateAndRender(timeSec, rawOpenness, rawDistScale, handCenter, isHandActive) {
+      render(timeSec, rawOpenness, rawDistScale, handCenter, isHandActive) {
         const W = this.canvas.width;
         const H = this.canvas.height;
         this.ctx.clearRect(0, 0, W, H);
 
-        // Smoothing tracking inputs
+        // Glättung der Tracking-Eingaben
         this.openness      += (rawOpenness  - this.openness)      * 0.12;
         this.distanceScale += (rawDistScale - this.distanceScale) * 0.08;
 
         if (isHandActive && handCenter) {
-          this.targetCX = handCenter.x;
-          this.targetCY = handCenter.y;
+          this.targetX = handCenter.x;
+          this.targetY = handCenter.y;
         } else {
-          this.targetCX = W / 2;
-          this.targetCY = H / 2;
+          // Ruhiges zentriertes Atmen bei Nicht-Erkennung
+          this.targetX = W / 2 + Math.sin(timeSec * 0.6) * 15;
+          this.targetY = H / 2 + Math.cos(timeSec * 0.6) * 12;
         }
 
-        this.centerX += (this.targetCX - this.centerX) * 0.075;
-        this.centerY += (this.targetCY - this.centerY) * 0.075;
+        this.centerX += (this.targetX - this.centerX) * 0.075;
+        this.centerY += (this.targetY - this.centerY) * 0.075;
 
-        // CORE MECHANIC: Moving closer shrinks the particle range (via distanceScale)
+        // KERNLOGIK: Näher zur Kamera verkleinert die Visualisierung (distanceScale sinkt bei Nähe)
         const baseRadius = Math.min(W, H) * 0.50 * this.distanceScale;
-        // Fist pulls tightly to 8%; Open hand expands to 100% + scatter
-        const effectiveRadius = baseRadius * (0.08 + 0.92 * this.openness);
-        const scatterBurst = Math.max(0, this.openness - 0.52) * baseRadius * 5.2;
+        // Faust zieht Partikel auf 8% zusammen; Offene Hand lässt sie auf 100% + Streuung expandieren
+        const shapeScale = baseRadius * (0.08 + 0.92 * this.openness);
+        const scatter = Math.max(0, this.openness - 0.52) * baseRadius * 5.0;
 
-        const shape = SHAPE_CATALOG[this.shapeIndex];
-        const palette = COLOR_PALETTES[this.paletteIndex];
+        const currentForm = FORMS[this.formIndex];
+        const currentPal = PALETTES[this.paletteIndex];
 
         this.ctx.globalCompositeOperation = "lighter";
 
         for (const p of this.particles) {
-          const pt = shape.fn(p.t, timeSec);
-          const targetX = this.centerX + pt.x * effectiveRadius + p.scatterX * scatterBurst;
-          const targetY = this.centerY + pt.y * effectiveRadius + p.scatterY * scatterBurst;
+          const pt = currentForm.fn(p.t, timeSec);
+          const targetCoordX = this.centerX + pt.x * shapeScale + p.scatterX * scatter;
+          const targetCoordY = this.centerY + pt.y * shapeScale + p.scatterY * scatter;
 
-          // Physics Spring-Follow
-          p.vx = (p.vx + (targetX - p.x) * 0.046) * 0.86;
-          p.vy = (p.vy + (targetY - p.y) * 0.046) * 0.86;
+          // Feder-Dämpfungs-Physik für fließende Übergänge
+          p.vx = (p.vx + (targetCoordX - p.x) * 0.046) * 0.86;
+          p.vy = (p.vy + (targetCoordY - p.y) * 0.046) * 0.86;
           p.x += p.vx;
           p.y += p.vy;
 
-          // Twinkle and depth alpha
-          const twinkle = 0.5 + 0.5 * Math.sin(timeSec * 3.4 + p.phase);
+          // Funkelnder Glow & Helligkeit
+          const twinkle = 0.5 + 0.5 * Math.sin(timeSec * 3.4 + p.twinklePhase);
           this.ctx.globalAlpha = twinkle * (0.35 + 0.65 * this.openness);
-          this.ctx.fillStyle = (p.t % (Math.PI / 2) < Math.PI / 4) ? palette.primary : palette.secondary;
+          this.ctx.fillStyle = (p.t % (Math.PI / 2) < Math.PI / 4) ? currentPal.primary : currentPal.secondary;
 
           this.ctx.beginPath();
-          this.ctx.arc(p.x, p.y, p.baseRadius * (0.6 + 0.55 * this.openness), 0, Math.PI * 2);
+          this.ctx.arc(p.x, p.y, p.radius * (0.6 + 0.55 * this.openness), 0, Math.PI * 2);
           this.ctx.fill();
         }
 
@@ -351,23 +425,23 @@
     }
 
     /* =========================================================================
-       3. SKELETT- & SENSOR-OVERLAY (NEON-GRAFIK FÜR WEBCAM-FEED)
+       3. SKELETT- & SENSORIK-BERECHNUNG
        ========================================================================= */
-    const FINGER_HUES = ["#ff5f7a", "#ffd166", "#00f5d4", "#4361ee", "#7209b7"];
-    function identifyFinger(idx) {
-      if (idx >= 1 && idx <= 4)   return 0; // Thumb
-      if (idx >= 5 && idx <= 8)   return 1; // Index
-      if (idx >= 9 && idx <= 12)  return 2; // Middle
-      if (idx >= 13 && idx <= 16) return 3; // Ring
-      if (idx >= 17 && idx <= 20) return 4; // Pinky
+    const FINGER_COLORS = ["#ff5f7a", "#ffd166", "#00f5d4", "#4361ee", "#7209b7"];
+    function fingerIndex(idx) {
+      if (idx >= 1 && idx <= 4)   return 0; // Daumen
+      if (idx >= 5 && idx <= 8)   return 1; // Zeigefinger
+      if (idx >= 9 && idx <= 12)  return 2; // Mittelfinger
+      if (idx >= 13 && idx <= 16) return 3; // Ringfinger
+      if (idx >= 17 && idx <= 20) return 4; // Kleiner Finger
       return -1;
     }
 
-    function renderGlowSegment(ctx, a, b, color, width) {
+    function drawGlowLine(ctx, a, b, color, width) {
       ctx.save();
       ctx.lineCap = "round";
       ctx.shadowColor = color;
-      ctx.shadowBlur = 12;
+      ctx.shadowBlur = 10;
       ctx.strokeStyle = color;
       ctx.lineWidth = width;
       ctx.globalAlpha = 0.85;
@@ -379,7 +453,7 @@
       ctx.restore();
     }
 
-    function renderGlowPoint(ctx, pt, color, r) {
+    function drawGlowPoint(ctx, pt, color, r) {
       const g = ctx.createRadialGradient(pt.x, pt.y, 0, pt.x, pt.y, r * 2.4);
       g.addColorStop(0, color);
       g.addColorStop(1, "rgba(0,0,0,0)");
@@ -389,72 +463,78 @@
       ctx.beginPath(); ctx.arc(pt.x, pt.y, r * 0.5, 0, Math.PI * 2); ctx.fill();
     }
 
-    /* =========================================================================
-       4. BIOMETRISCHE MESSUNGEN (DISTANZ & OFFENHEIT)
-       ========================================================================= */
-    function calcDistance(p1, p2) {
-      return Math.hypot(p1.x - p2.x, p1.y - p2.y);
+    function distance2D(a, b) {
+      return Math.hypot(a.x - b.x, a.y - b.y);
     }
 
-    // Handöffnung: Durchschnittliche Distanz der Fingerspitzen zum Handgelenk,
-    // skaliert anhand der Handballen-Referenz (Handgelenk -> Mittelfinger-Grundgelenk)
-    function measureHandOpenness(landmarks) {
+    // Invariante Handöffnungsmessung
+    function calcHandOpenness(landmarks) {
       const wrist = landmarks[0];
-      const palmScale = calcDistance(wrist, landmarks[9]) || 1e-5;
-      const fingertips = [4, 8, 12, 16, 20];
-      let totalDist = 0;
-      for (const tip of fingertips) {
-        totalDist += calcDistance(wrist, landmarks[tip]);
+      const palmScale = distance2D(wrist, landmarks[9]) || 1e-5;
+      const tips = [4, 8, 12, 16, 20];
+      let sumDist = 0;
+      for (const tip of tips) {
+        sumDist += distance2D(wrist, landmarks[tip]);
       }
-      const meanDistRatio = (totalDist / fingertips.length) / palmScale;
-      // Faust ≈ 0.95..1.05 | Voll offen ≈ 1.85..2.10
-      return Math.min(1.0, Math.max(0.0, (meanDistRatio - 1.0) / 0.85));
+      const ratio = (sumDist / tips.length) / palmScale;
+      // Faust ≈ 1.0, Voll offen ≈ 1.95 -> gemappt auf 0..1
+      return Math.min(1.0, Math.max(0.0, (ratio - 1.0) / 0.85));
     }
 
     /* =========================================================================
-       5. MAIN APPLICATION CONTROLLER
+       4. HAUPTPROGRAMM & UI-BINDUNGEN
        ========================================================================= */
-    const particleSurface = document.getElementById("particleSurface");
-    const rawVideoElement = document.getElementById("rawVideoElement");
-    const visionOverlayCanvas = document.getElementById("visionOverlayCanvas");
-    const overlayContext = visionOverlayCanvas.getContext("2d");
+    const cosmicCanvas = document.getElementById("cosmicCanvas");
+    const webcamElement = document.getElementById("webcamElement");
+    const skeletonCanvas = document.getElementById("skeletonCanvas");
+    const skelCtx = skeletonCanvas.getContext("2d");
+
+    const onboardingModal = document.getElementById("onboardingModal");
     const loadingOverlay = document.getElementById("loadingOverlay");
+    const startExperienceBtn = document.getElementById("startExperienceBtn");
+    const openTutorialBtn = document.getElementById("openTutorialBtn");
+    const fullscreenToggleBtn = document.getElementById("fullscreenToggleBtn");
 
-    const liveClock = document.getElementById("liveClock");
-    const liveDate = document.getElementById("liveDate");
-    const handStatusBadge = document.getElementById("handStatusBadge");
-    const opennessValueLabel = document.getElementById("opennessValueLabel");
-    const opennessBarFill = document.getElementById("opennessBarFill");
-    const proximityStateLabel = document.getElementById("proximityStateLabel");
-    const proximityBarFill = document.getElementById("proximityBarFill");
-    const activeShapeLabel = document.getElementById("activeShapeLabel");
-    const activePaletteLabel = document.getElementById("activePaletteLabel");
+    const toggleCamBtn = document.getElementById("toggleCamBtn");
+    const toggleCamText = document.getElementById("toggleCamText");
+    const toggleCamIcon = document.getElementById("toggleCamIcon");
+    const camBox = document.getElementById("camBox");
 
-    const shapeMorphBanner = document.getElementById("shapeMorphBanner");
-    const bannerIcon = document.getElementById("bannerIcon");
-    const bannerTitle = document.getElementById("bannerTitle");
-    const bannerSub = document.getElementById("bannerSub");
+    const hudClock = document.getElementById("hudClock");
+    const hudDate = document.getElementById("hudDate");
+    const handStateText = document.getElementById("handStateText");
+    const opennessText = document.getElementById("opennessText");
+    const opennessBar = document.getElementById("opennessBar");
+    const proximityText = document.getElementById("proximityText");
+    const proximityBar = document.getElementById("proximityBar");
+    const currentShapeText = document.getElementById("currentShapeText");
+    const currentPaletteText = document.getElementById("currentPaletteText");
 
-    function resizeSurface() {
-      particleSurface.width = window.innerWidth;
-      particleSurface.height = window.innerHeight;
+    const morphNotice = document.getElementById("morphNotice");
+    const morphIcon = document.getElementById("morphIcon");
+    const morphTitle = document.getElementById("morphTitle");
+    const morphPalette = document.getElementById("morphPalette");
+
+    function resizeCanvas() {
+      cosmicCanvas.width = window.innerWidth;
+      cosmicCanvas.height = window.innerHeight;
     }
-    window.addEventListener("resize", resizeSurface);
-    resizeSurface();
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
 
-    // Clock
-    const DAY_NAMES = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+    // Uhrzeit & Datum
+    const TAGE = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
     setInterval(() => {
       const now = new Date();
-      liveClock.textContent = now.toLocaleTimeString("de-DE", { hour12: false });
+      hudClock.textContent = now.toLocaleTimeString("de-DE", { hour12: false });
       const y = now.getFullYear();
       const m = String(now.getMonth() + 1).padStart(2, "0");
       const d = String(now.getDate()).padStart(2, "0");
-      liveDate.textContent = `${d}.${m}.${y} ${DAY_NAMES[now.getDay()]}`;
+      hudDate.textContent = `${d}.${m}.${y} ${TAGE[now.getDay()]}`;
     }, 500);
 
-    // Fullscreen toggle
-    document.getElementById("fullscreenToggle").addEventListener("click", () => {
+    // Vollbild Toggle
+    fullscreenToggleBtn.addEventListener("click", () => {
       if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen().catch(() => {});
       } else {
@@ -462,43 +542,80 @@
       }
     });
 
-    // Initialize Engine
-    const engine = new LuminaParticleEngine(particleSurface, 3800);
+    // Einklappbare Webcam-Vorschau
+    let isCamCollapsed = false;
+    toggleCamBtn.addEventListener("click", () => {
+      isCamCollapsed = !isCamCollapsed;
+      if (isCamCollapsed) {
+        camBox.classList.add("hidden");
+        toggleCamText.textContent = "Kamera aufklappen";
+        toggleCamIcon.setAttribute("data-lucide", "video-off");
+      } else {
+        camBox.classList.remove("hidden");
+        toggleCamText.textContent = "Kamera einklappen";
+        toggleCamIcon.setAttribute("data-lucide", "video");
+      }
+      lucide.createIcons();
+    });
 
-    function notifyShapeChange(shape, palette) {
-      activeShapeLabel.innerHTML = `<span>${shape.icon}</span> <span>${shape.name}</span>`;
-      activePaletteLabel.textContent = palette.name;
-      activePaletteLabel.style.color = palette.primary;
+    // Tutorial Öffnen / Schließen
+    openTutorialBtn.addEventListener("click", () => {
+      onboardingModal.classList.remove("hidden");
+    });
 
-      bannerIcon.textContent = shape.icon;
-      bannerTitle.textContent = `${shape.name} aktiviert`;
-      bannerSub.textContent = `Farbschema: ${palette.name}`;
-      shapeMorphBanner.classList.remove("opacity-0", "scale-90");
-      shapeMorphBanner.classList.add("opacity-100", "scale-100");
+    // Initialisierung Engine
+    const engine = new CosmicParticleEngine(cosmicCanvas, 4200);
+
+    function updateFormDisplay(form, pal) {
+      currentShapeText.innerHTML = `<span>${form.icon}</span> <span>${form.name}</span>`;
+      currentPaletteText.textContent = pal.name;
+      currentPaletteText.style.color = pal.primary;
+
+      morphIcon.textContent = form.icon;
+      morphTitle.textContent = `${form.name} aktiviert`;
+      morphPalette.textContent = `Farbschema: ${pal.name}`;
+      morphNotice.classList.remove("opacity-0", "scale-90");
+      morphNotice.classList.add("opacity-100", "scale-100");
 
       setTimeout(() => {
-        shapeMorphBanner.classList.add("opacity-0", "scale-90");
-        shapeMorphBanner.classList.remove("opacity-100", "scale-100");
-      }, 1000);
+        morphNotice.classList.add("opacity-0", "scale-90");
+        morphNotice.classList.remove("opacity-100", "scale-100");
+      }, 1100);
     }
-    notifyShapeChange(SHAPE_CATALOG[0], COLOR_PALETTES[0]);
+    updateFormDisplay(FORMS[0], PALETTES[0]);
 
-    // Tracking state machine
-    let wasFistClosed = false;
-    let lastTransitionTime = 0;
+    // Gesten-Zustandsautomat mit Sperrzeit
+    let fistLatched = false;
+    let lastSwitchTime = 0;
+    const SWITCH_LOCKOUT_MS = 1000; // Verhindert ungewollte Mehrfachwechsel
+
     let rawOpenness = 0.5;
-    let rawDistanceScale = 1.0;
+    let rawDistScale = 1.0;
     let handScreenPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     let isHandDetected = false;
 
-    let handLandmarker, poseLandmarker;
+    let handLandmarker = null;
+    let isInitialized = false;
 
-    async function bootstrap() {
+    // Start-Button Klick
+    startExperienceBtn.addEventListener("click", async () => {
+      onboardingModal.classList.add("hidden");
+      if (!isInitialized) {
+        loadingOverlay.classList.remove("hidden");
+        loadingOverlay.classList.add("flex");
+        await startVisionAI();
+        loadingOverlay.classList.add("hidden");
+        loadingOverlay.classList.remove("flex");
+        isInitialized = true;
+      }
+    });
+
+    async function startVisionAI() {
       const visionResolver = await FilesetResolver.forVisionTasks(
         "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
       );
 
-      const [hl, pl, stream] = await Promise.all([
+      const [hl, stream] = await Promise.all([
         HandLandmarker.createFromOptions(visionResolver, {
           baseOptions: {
             modelAssetPath: "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
@@ -507,14 +624,6 @@
           runningMode: "VIDEO",
           numHands: 2
         }),
-        PoseLandmarker.createFromOptions(visionResolver, {
-          baseOptions: {
-            modelAssetPath: "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task",
-            delegate: "GPU"
-          },
-          runningMode: "VIDEO",
-          numPoses: 1
-        }),
         navigator.mediaDevices.getUserMedia({
           video: { width: 640, height: 480 },
           audio: false
@@ -522,169 +631,138 @@
       ]);
 
       handLandmarker = hl;
-      poseLandmarker = pl;
+      webcamElement.srcObject = stream;
+      await new Promise(r => webcamElement.onloadeddata = r);
+      try { await webcamElement.play(); } catch (_) {}
 
-      rawVideoElement.srcObject = stream;
-      await new Promise(res => rawVideoElement.onloadeddata = res);
-      try { await rawVideoElement.play(); } catch (_) {}
-      visionOverlayCanvas.width = rawVideoElement.videoWidth;
-      visionOverlayCanvas.height = rawVideoElement.videoHeight;
+      skeletonCanvas.width = webcamElement.videoWidth;
+      skeletonCanvas.height = webcamElement.videoHeight;
 
-      loadingOverlay.style.display = "none";
       lucide.createIcons();
-      requestAnimationFrame(applicationLoop);
+      requestAnimationFrame(mainAnimationLoop);
     }
 
-    let lastVideoStamp = -1;
+    let lastVideoFrameTime = -1;
 
-    function applicationLoop() {
-      requestAnimationFrame(applicationLoop);
+    function mainAnimationLoop() {
+      requestAnimationFrame(mainAnimationLoop);
       const nowMs = performance.now();
       const timeSec = nowMs / 1000;
 
-      if (rawVideoElement.currentTime !== lastVideoStamp) {
-        lastVideoStamp = rawVideoElement.currentTime;
+      if (webcamElement.currentTime !== lastVideoFrameTime) {
+        lastVideoFrameTime = webcamElement.currentTime;
 
-        const handResults = handLandmarker.detectForVideo(rawVideoElement, nowMs);
-        const poseResults = poseLandmarker.detectForVideo(rawVideoElement, nowMs);
+        const results = handLandmarker.detectForVideo(webcamElement, nowMs);
+        skelCtx.clearRect(0, 0, skeletonCanvas.width, skeletonCanvas.height);
 
-        overlayContext.clearRect(0, 0, visionOverlayCanvas.width, visionOverlayCanvas.height);
+        let activeHand = null;
+        if (results.landmarks && results.landmarks.length > 0) {
+          for (let i = 0; i < results.landmarks.length; i++) {
+            const hLm = results.landmarks[i];
+            const handedness = results.handednesses?.[i]?.[0]?.categoryName;
+            const isRightHand = (handedness === "Left"); // Gespiegelt: echte rechte Hand ist "Left"
 
-        // Render Pose Skeleton
-        if (poseResults.landmarks && poseResults.landmarks.length > 0) {
-          const pLm = poseResults.landmarks[0];
-          for (const conn of PoseLandmarker.POSE_CONNECTIONS) {
-            const ptA = pLm[conn.start], ptB = pLm[conn.end];
-            if (ptA.visibility < 0.5 || ptB.visibility < 0.5) continue;
-            renderGlowSegment(
-              overlayContext,
-              { x: ptA.x * visionOverlayCanvas.width, y: ptA.y * visionOverlayCanvas.height },
-              { x: ptB.x * visionOverlayCanvas.width, y: ptB.y * visionOverlayCanvas.height },
-              "#00e5ff",
-              3.5
-            );
-          }
-        }
-
-        // Identify primary control hand (mirrored: right hand appears as category "Left")
-        let primaryHand = null;
-        if (handResults.landmarks && handResults.landmarks.length > 0) {
-          for (let i = 0; i < handResults.landmarks.length; i++) {
-            const hLm = handResults.landmarks[i];
-            const handedness = handResults.handednesses?.[i]?.[0]?.categoryName;
-            const isRightHand = (handedness === "Left");
-
-            // Render Hand Skeleton
+            // Zeichne Hand-Skelett mit Leucht-Glow
             for (const conn of HandLandmarker.HAND_CONNECTIONS) {
-              const f = Math.max(identifyFinger(conn.start), identifyFinger(conn.end));
-              const color = isRightHand ? (f >= 0 ? FINGER_HUES[f] : "#ffffff") : "#64748b";
-              renderGlowSegment(
-                overlayContext,
-                { x: hLm[conn.start].x * visionOverlayCanvas.width, y: hLm[conn.start].y * visionOverlayCanvas.height },
-                { x: hLm[conn.end].x * visionOverlayCanvas.width, y: hLm[conn.end].y * visionOverlayCanvas.height },
+              const f = Math.max(fingerIndex(conn.start), fingerIndex(conn.end));
+              const color = isRightHand ? (f >= 0 ? FINGER_COLORS[f] : "#ffffff") : "#64748b";
+              drawGlowLine(
+                skelCtx,
+                { x: hLm[conn.start].x * skeletonCanvas.width, y: hLm[conn.start].y * skeletonCanvas.height },
+                { x: hLm[conn.end].x * skeletonCanvas.width, y: hLm[conn.end].y * skeletonCanvas.height },
                 color,
                 isRightHand ? 3.5 : 2.5
               );
             }
             for (let j = 0; j < hLm.length; j++) {
-              const f = identifyFinger(j);
-              const color = isRightHand ? (f >= 0 ? FINGER_HUES[f] : "#ffffff") : "#94a3b8";
+              const f = fingerIndex(j);
+              const color = isRightHand ? (f >= 0 ? FINGER_COLORS[f] : "#ffffff") : "#94a3b8";
               const isTip = (j === 4 || j === 8 || j === 12 || j === 16 || j === 20);
-              renderGlowPoint(
-                overlayContext,
-                { x: hLm[j].x * visionOverlayCanvas.width, y: hLm[j].y * visionOverlayCanvas.height },
+              drawGlowPoint(
+                skelCtx,
+                { x: hLm[j].x * skeletonCanvas.width, y: hLm[j].y * skeletonCanvas.height },
                 color,
                 isTip ? 5.5 : 3.5
               );
             }
 
-            if (isRightHand) primaryHand = hLm;
+            if (isRightHand) activeHand = hLm;
           }
-          if (!primaryHand && handResults.landmarks.length === 1) {
-            primaryHand = handResults.landmarks[0];
+          if (!activeHand && results.landmarks.length === 1) {
+            activeHand = results.landmarks[0];
           }
         }
 
-        // EVALUATE CORE GESTURE MECHANICS
-        if (primaryHand) {
+        /* =====================================================================
+           GESTEN-AUSWERTUNG & INTERAKTIONS-LOGIK
+           ===================================================================== */
+        if (activeHand) {
           isHandDetected = true;
-          rawOpenness = measureHandOpenness(primaryHand);
+          rawOpenness = calcHandOpenness(activeHand);
 
-          // Horizontal flip coordinates for intuitive mirror navigation
-          const palm = primaryHand[9];
+          // Horizontal spiegeln für intuitive Steuerung
+          const palm = activeHand[9];
           handScreenPos.x = (1.0 - palm.x) * window.innerWidth;
           handScreenPos.y = palm.y * window.innerHeight;
 
-          /* -------------------------------------------------------------------
-             1. MOVING CLOSER SHRINKS THE PARTICLE RANGE
-             Hand palm length in normalized frame (0.04 far .. 0.28 close)
-             ------------------------------------------------------------------- */
-          const palmDimension = calcDistance(primaryHand[0], primaryHand[9]);
-          const proximity = Math.min(1.0, Math.max(0.0, (palmDimension - 0.05) / 0.22));
-          // Moving closer shrinks range: 1.6x (far) -> 0.3x (very close)
-          rawDistanceScale = 1.6 - proximity * 1.3;
+          // 1. DISTANZ ZUR KAMERA:
+          // Größere Handfläche = näher an der Kamera -> Visualisierung wird kleiner!
+          // Kleinere Handfläche = weiter entfernt -> Visualisierung wird größer!
+          const palmSize = distance2D(activeHand[0], activeHand[9]);
+          const proximity = Math.min(1.0, Math.max(0.0, (palmSize - 0.05) / 0.22));
+          // Näher (proximity -> 1): Maßstab schrumpft auf 0.35x
+          // Weiter weg (proximity -> 0): Maßstab wächst auf 1.65x
+          rawDistScale = 1.65 - proximity * 1.30;
 
-          /* -------------------------------------------------------------------
-             2. FIST -> OPEN TRANSITION: SWITCHES SHAPE & COLOR
-             ------------------------------------------------------------------- */
-          const isFist = rawOpenness < 0.24;
+          // 2. FAUST -> HAND ÖFFNEN: Einmaliger Wechsel von Form & Farbpalette
+          const isFist = rawOpenness < 0.22;
           const isOpen = rawOpenness > 0.65;
 
           if (isFist) {
-            wasFistClosed = true;
+            fistLatched = true;
           }
 
-          if (wasFistClosed && isOpen && (nowMs - lastTransitionTime > 850)) {
-            wasFistClosed = false;
-            lastTransitionTime = nowMs;
-            const updated = engine.next();
-            notifyShapeChange(updated.shape, updated.palette);
+          if (fistLatched && isOpen && (nowMs - lastSwitchTime > SWITCH_LOCKOUT_MS)) {
+            fistLatched = false;
+            lastSwitchTime = nowMs;
+            const res = engine.nextForm();
+            updateFormDisplay(res.form, res.palette);
           }
 
-          // Update HUD
+          // HUD-Aktualisierung
           if (isFist) {
-            handStatusBadge.textContent = "✊ Faust (Bereit)";
-            handStatusBadge.className = "font-mono text-xs font-bold text-rose-400";
+            handStateText.textContent = "✊ Faust (Bereit zum Wechsel)";
+            handStateText.className = "font-mono text-xs font-bold text-rose-400";
           } else if (isOpen) {
-            handStatusBadge.textContent = "🖐 Offen (Aktiv)";
-            handStatusBadge.className = "font-mono text-xs font-bold text-emerald-400";
+            handStateText.textContent = "🖐 Offen (Partikel expandieren)";
+            handStateText.className = "font-mono text-xs font-bold text-emerald-400";
           } else {
-            handStatusBadge.textContent = "🤏 Halb offen";
-            handStatusBadge.className = "font-mono text-xs font-bold text-amber-300";
+            handStateText.textContent = "🤏 Halb geöffnet";
+            handStateText.className = "font-mono text-xs font-bold text-amber-300";
           }
 
           const pct = Math.round(rawOpenness * 100);
-          opennessValueLabel.textContent = `${pct}%`;
-          opennessBarFill.style.width = `${pct}%`;
+          opennessText.textContent = `${pct}%`;
+          opennessBar.style.width = `${pct}%`;
 
           const proxPct = Math.round(proximity * 100);
-          proximityBarFill.style.width = `${proxPct}%`;
-          proximityStateLabel.textContent = proximity > 0.66 ? "Nah (Bereich verkleinert)" : (proximity > 0.33 ? "Mittel (Normal)" : "Fern (Weit)");
+          proximityBar.style.width = `${proxPct}%`;
+          proximityText.textContent = proximity > 0.66 ? "Nah (Form verkleinert)" : (proximity > 0.33 ? "Mittel" : "Fern (Form vergrößert)");
 
         } else {
           isHandDetected = false;
-          handStatusBadge.textContent = "Suche Hand...";
-          handStatusBadge.className = "font-mono text-xs font-bold text-slate-500";
+          handStateText.textContent = "Suche Hand...";
+          handStateText.className = "font-mono text-xs font-bold text-slate-500";
           rawOpenness = 0.5;
-          rawDistanceScale = 1.0;
+          rawDistScale = 1.0;
         }
       }
 
-      // Render Particles with updated motion inputs
-      engine.updateAndRender(timeSec, rawOpenness, rawDistanceScale, handScreenPos, isHandDetected);
+      // Rendere Partikel mit geglätteten Werten
+      engine.render(timeSec, rawOpenness, rawDistScale, handScreenPos, isHandDetected);
     }
 
-    bootstrap().catch(err => {
-      loadingOverlay.innerHTML = `
-        <div class="hud-backdrop p-6 rounded-2xl max-w-md text-center space-y-3 border border-rose-500/40">
-          <i data-lucide="alert-triangle" class="w-8 h-8 text-rose-400 mx-auto"></i>
-          <h3 class="text-sm font-bold text-slate-100">Kamerazugriff erforderlich</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">${err.message}<br>Bitte erlauben Sie im Browser den Zugriff auf die Webcam.</p>
-        </div>
-      `;
-      lucide.createIcons();
-      console.error("Bootstrap failure:", err);
-    });
+    lucide.createIcons();
   </script>
 </body>
 </html>
