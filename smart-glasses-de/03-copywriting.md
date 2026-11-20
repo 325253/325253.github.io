@@ -1,20 +1,52 @@
-# 03 - Marketing Copywriting (German Market)
+# Taktblick – Marketingtexte
 
-## Hero Section
-- **Headline:** Klare Sicht. Volle Kontrolle.
-- **Subheadline:** Freihändige KI-Assistenz, Live-Übersetzung und visuelle Unterstützung – entwickelt mit sichtbaren Aufnahme-Indikatoren, Hardware-Datenschutzkontrollen und klaren Datengrenzen für Deutschland.
-- **Primary CTA:** Pilotprojekt anfragen
-- **Secondary CTA:** Datenschutz-Architektur entdecken
+## Slogan
 
-## Value Pillars
-### 1. Sichtbare Transparenz statt versteckter Technik
-Ein deutlich erkennbarer Status-Indikator signalisiert aktiv, sobald Kamera oder Mikrofon genutzt werden. So bleiben Gespräche im Alltag und im Arbeitsumfeld jederzeit nachvollziehbar.
+**Dein nächster Schritt im Blick.**
 
-### 2. Praktische Unterstützung im Arbeitsalltag
-Ob Live-Übersetzung im Kundengespräch, freihändige Checklisten im Einsatz oder schnelle Sprachnotizen unterwegs: Relevante Informationen erscheinen genau dann im Sichtfeld, wenn Sie sie brauchen.
+## Landingpage
 
-### 3. Entwickelt für deutsche Datenschutz- und Compliance-Standards
-Konfigurierbare Datenflüsse, lokale Verarbeitungsoptionen und transparente Admin-Richtlinien unterstützen Unternehmen bei der DSGVO-konformen Einführung und der Abstimmung mit dem Betriebsrat.
+### Hero
 
-## Compliance Disclaimer (Footer / Product Note)
-*Hinweis: Technische Schutzfunktionen unterstützen datenschutzkonforme Arbeitsabläufe, ersetzen jedoch nicht die rechtliche Prüfung im jeweiligen Einsatzszenario (insbesondere Informationspflichten nach DSGVO, § 201 StGB sowie betriebliche Mitbestimmung).*
+- **Produktname** Taktblick
+- **Status** Konzeptdemo
+- **Titel** Dein nächster Schritt im Blick.
+- **Untertitel** Taktblick ist das Konzept einer Displaybrille für deinen Arbeitsweg. Wähle am Smartphone aus, welche kurzen Hinweise du bei Bedarf im Blickfeld sehen möchtest.
+- **Hauptaktion** Demo ansehen
+
+### Kernvorteile
+
+**Den Umstieg im Blick**  
+Ein vorbereiteter Hinweis zeigt dir beim Halt, wo es weitergeht.
+
+**Den Fußweg im Blick**  
+Blende am Bahnhof einen gespeicherten Wegpunkt für das letzte Stück zu Fuß ein.
+
+**Den Termin im Blick**  
+Rufe Zeit und Ort eines Termins auf, den du selbst eingetragen hast.
+
+**Eine Fassung ohne Kamera und Mikrofon**  
+Für Taktblick ist eine Fassung ohne Kamera und Mikrofon vorgesehen. Du wählst am Smartphone aus, welche Hinweise die Brille anzeigen soll.
+
+### Demo und Handlungsaufforderung
+
+- **CTA im Hero** Demo ansehen
+- **Abschnittstitel** So könnte dein Blickfeld aussehen
+- **Einleitung** Wähle ein Beispiel aus und sieh, wie der Hinweis im Blickfeld erscheinen könnte.
+- **Hinweis direkt an der Interaktion** Die Browserdemo zeigt fiktive Hinweise. Sie bietet keine Live-Navigation und erhebt keine personenbezogenen Daten.
+
+| Auswahl | Anzeige im simulierten Blickfeld |
+| --- | --- |
+| Umstieg | Nächster Umstieg · Gleis 4 |
+| Fußweg | Gespeicherter Wegpunkt · Nordausgang |
+| Termin | 09:00 Uhr · Besprechung, Raum 2 |
+
+## Stichpunkte für die Präsentation
+
+- Am Bahnhof oder auf den letzten Metern zum Büro reicht oft eine kurze Information.
+- Wer regelmäßig umsteigt, kann die nächsten Schritte vorab auswählen.
+- Taktblick soll diese Hinweise auf Abruf in einer Displaybrille zeigen.
+- Der Einstieg konzentriert sich auf drei Aufgaben: Umstieg, gespeicherter Wegpunkt und Termin.
+- Die geplante Fassung kommt ohne Kamera und Mikrofon aus. Die Hinweise werden am Smartphone ausgewählt.
+- Im Browser lässt sich der Ansatz anhand fiktiver Beispiele nachvollziehen.
+- Im Pilotvergleich prüfen wir, ob Pendelnde die Hinweise korrekt erkennen und die Anzeige an der Brille ihrem gewohnten Gerät vorziehen.

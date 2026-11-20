@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Taktblick · Projektbericht</title>
+<style>
+:root { color-scheme: light; font-family: system-ui, sans-serif; color: #173327; background: #f4f3ec; }
+body { margin: 0; }
+header { background: #19392a; color: #fff; padding: 2rem max(5vw, calc((100vw - 58rem)/2)); }
+header a { color: #ebf2d4; font-weight: 650; }
+main { max-width: 58rem; margin: auto; padding: 2rem 5vw 4rem; line-height: 1.65; overflow-wrap: anywhere; }
+h1, h2 { line-height: 1.15; }
+h1 { font-size: clamp(2rem, 5vw, 3.25rem); margin: 0 0 1.5rem; }
+h2 { margin-top: 2rem; }
+a { color: #245d42; text-underline-offset: .16em; }
+table { width: 100%; border-collapse: collapse; font-size: .93rem; }
+th, td { padding: .65rem; border: 1px solid #bdcabd; text-align: left; vertical-align: top; }
+th { background: #e0eadb; }
+li + li { margin-top: .5rem; }
+@media (max-width: 480px) { th, td { padding: .35rem; } }
+</style>
+</head>
+<body>
+<header><a href="04-prototype/index.html">Interaktive Demo öffnen</a></header>
+<main>
+<h1 id="taktblick-abschlussbericht-fur-den-deutschen-markt">Taktblick – Abschlussbericht für den deutschen Markt</h1>
+<ol start="20">
+<li>November 2026 · Entscheidungsgrundlage für einen Konzepttest</li>
+</ol>
+<h2 id="kurzfazit">Kurzfazit</h2>
+<p>Taktblick ist das Konzept einer Displaybrille für Menschen, die zu Fuß und mit dem ÖPNV pendeln. Sie soll ausgewählte Hinweise zu Umstieg, Wegpunkt und Termin zeigen. Die Fassung ist ohne Kamera und Mikrofon geplant. Die deutschsprachige Browserdemo ist für einen betreuten Konzepttest bereit. Ob die Anzeige am Auge im Alltag besser funktioniert als der Blick aufs Smartphone oder die Smartwatch, bleibt die zentrale Produktfrage. <a href="04-prototype/index.html">Browserdemo öffnen</a></p>
+<h2 id="ergebnisse-im-uberblick">Ergebnisse im Überblick</h2>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Ergebnis</th>
+<th>Stand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Recherche</td>
+<td><a href="01-research.md">Marktstudie</a></td>
+<td>Deutsches Befragungssignal, Wettbewerber und Markteintrittshürden dokumentiert</td>
+</tr>
+<tr>
+<td>Strategie</td>
+<td><a href="02-strategy.md">Positionierung und Markteintritt</a></td>
+<td>Zielgruppe, Testschwellen, Vertrieb und Preishypothesen festgelegt</td>
+</tr>
+<tr>
+<td>Vermarktung</td>
+<td><a href="03-copywriting.md">Marketingtexte</a></td>
+<td>Deutschsprachige Landingpage und Präsentationspunkte ausgearbeitet</td>
+</tr>
+<tr>
+<td>Entwicklung</td>
+<td><a href="04-prototype/index.html">Interaktive Browserdemo</a></td>
+<td>Drei fiktive Hinweise lassen sich lokal ausprobieren</td>
+</tr>
+<tr>
+<td>Qualitätssicherung</td>
+<td><a href="05-qa-report.md">QA-Bericht</a></td>
+<td>Für die lokale Nutzung freigegeben. Chromium-Test bei 320, 390 und 1.440 Pixeln bestanden</td>
+</tr>
+</tbody>
+</table>
+<h2 id="was-tragt">Was trägt</h2>
+<ul>
+<li><strong>Der Einstieg ist konkret.</strong> Die Marktstudie unterscheidet Kurzinfos im Blickfeld von Kamera-Aufnahmen, virtuellen Bildschirmen und Fernwartung. Die Strategie konzentriert sich auf den Umstieg, weil er einen wiederkehrenden Anlass mit einer beobachtbaren Aufgabe bietet. <a href="01-research.md">Marktstudie</a> · <a href="02-strategy.md">Strategie</a></li>
+<li><strong>Text und Demo setzen die Positionierung um.</strong> „Dein nächster Schritt im Blick.“ führt über „Demo ansehen“ zu den drei Beispielhinweisen. Die Demo kennzeichnet diese direkt am Bedienelement als fiktiv. Der Verzicht auf Kamera und Mikrofon erscheint als Designziel. <a href="03-copywriting.md">Marketingtexte</a> · <a href="04-prototype/index.html">Browserdemo</a></li>
+<li><strong>Der Prototyp funktioniert im geprüften Umfang.</strong> Der CTA führt zur Demo, alle Szenarien lassen sich per Eingabetaste umschalten und der Auswahlzustand aktualisiert sich. Im Chromium-Test gab es bei drei Ansichtsbreiten keinen horizontalen Überlauf, keine Seitenfehler und keine HTTP-Anfragen. <a href="05-qa-report.md">QA-Bericht</a></li>
+</ul>
+<h2 id="was-die-entscheidung-noch-offenlasst">Was die Entscheidung noch offenlässt</h2>
+<ul>
+<li><strong>Nachfrage und Preis.</strong> Die Bitkom-Befragung misst bisherige Nutzung einschließlich Tests und geäußertes Interesse. Für die Pendelzielgruppe fehlen Daten zu Häufigkeit, Kaufbereitschaft und Vertriebskosten. Die angesetzten 399 € und 499 € sind interne Testpreise. <a href="01-research.md">Marktstudie</a> · <a href="02-strategy.md">Strategie</a></li>
+<li><strong>Vorteil gegenüber vorhandenen Geräten.</strong> Even G2 bietet bereits ein Display ohne Kamera. Taktblick muss den Wert der ausgewählten Pendelhinweise im direkten Vergleich mit dem gewohnten Gerät zeigen. Passform, Lesbarkeit mit Sehstärke und visuelle Ablenkung erfordern eine physische Erprobung. <a href="01-research.md">Marktstudie</a> · <a href="02-strategy.md">Strategie</a></li>
+<li><strong>Produktreife.</strong> Die Browserdemo zeigt nur die Abrufansicht. Die Auswahl am gekoppelten Smartphone, Datenflüsse und Löschmöglichkeiten sind im Produktkonzept noch auszugestalten. Die QA nennt als optionale Verbesserungen die Überschriftenhierarchie und einen Hinweis bei deaktiviertem JavaScript. <a href="02-strategy.md">Strategie</a> · <a href="05-qa-report.md">QA-Bericht</a></li>
+</ul>
+<h2 id="priorisierte-nachste-schritte">Priorisierte nächste Schritte</h2>
+<ol>
+<li><strong>Verständlichkeit und Nutzen testen.</strong> Zwölf regelmäßige ÖPNV-Pendelnde in zwei deutschen Städten rekrutieren, darunter Personen mit Korrekturbrille. Im betreuten Browsertermin alle drei Hinweise erklären lassen und die simulierte Umsteigeaufgabe mit dem gewohnten Gerät vergleichen. Aufgabenzeit, Fehlinterpretationen und Präferenz erfassen. Als interne Schwellen gelten mindestens 9 von 12 mit korrektem Verständnis aller Beispiele und mindestens 7 von 12 mit Präferenz für die simulierte Anzeige. Bei sicherheitsrelevanten Fehlinterpretationen den Aufbau überarbeiten und erneut prüfen. <a href="02-strategy.md">Strategie</a></li>
+<li><strong>Anprobe und Preis vorbereiten.</strong> Drei Optik-Fachgeschäfte zu Anprobe, Korrekturgläsern und Service befragen. Für die nächste Phase mindestens zwei Partner für betreute Anproben gewinnen. 399 € und 499 € inkl. MwSt. in wechselnder Reihenfolge testen und mit freiwilligen Folgeterminen abgleichen. <a href="02-strategy.md">Strategie</a></li>
+<li><strong>Hardwarepilot an Nachweise knüpfen.</strong> Datenflüsse, technische Konformität, Passform, Lesbarkeit und Ablenkung klären. Physische Tests im Stand oder auf einem kontrollierten Parcours ansetzen. Über den Pilotumfang anhand der Ergebnisse sowie der erwarteten Stück-, Retouren- und Servicekosten entscheiden. <a href="01-research.md">Marktstudie</a> · <a href="02-strategy.md">Strategie</a></li>
+</ol>
+
+</main></body></html>

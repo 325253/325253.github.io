@@ -1,174 +1,134 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Klare Sicht. Volle Kontrolle. | Smart Glasses für Deutschland</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Taktblick – Konzept einer Displaybrille</title>
   <style>
-    :root {
-      --bg: #0f172a;
-      --surface: #1e293b;
-      --surface-light: #334155;
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --accent: #38bdf8;
-      --accent-dark: #0284c7;
-      --success: #22c55e;
-      --warning: #f59e0b;
+    :root { color-scheme: light; --ink: #222b27; --muted: #535e55; --paper: #f8f7ef; --line: #d6dbd0; --green: #1c3c31; }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--paper); font: 1rem/1.6 system-ui, sans-serif; }
+    .wrap { width: min(72rem, calc(100% - 3rem)); margin-inline: auto; }
+    header, footer { border-block-end: 1px solid var(--line); }
+    footer { border-block-start: 1px solid var(--line); border-block-end: 0; }
+    .bar { min-height: 4.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .brand { font-weight: 800; font-size: 1.35rem; letter-spacing: -.045em; }
+    .status { color: var(--muted); font-size: .875rem; }
+    h1, h2, h3, p { margin: 0; }
+    h1, h2 { letter-spacing: -.055em; line-height: 1.02; text-wrap: balance; }
+    h1 { max-width: 10ch; font-size: clamp(2.6rem, 7.4vw, 6.55rem); }
+    h2 { font-size: clamp(2rem, 4.8vw, 3.8rem); }
+    .hero { display: grid; grid-template-columns: 1.04fr 1fr; gap: clamp(1.5rem, 5vw, 5rem); align-items: center; padding-block: clamp(2.5rem, 7vw, 6.5rem); }
+    .intro { margin-block: 1.25rem 1.7rem; max-width: 36ch; color: var(--muted); font-size: 1.1rem; }
+    .action { display: inline-flex; align-items: center; gap: .7em; padding: .72em 1.2em; background: var(--green); color: white; border-radius: .3rem; text-decoration: none; font-weight: 700; }
+    .action::after { content: "↓"; }
+    .action:hover { background: #2a5546; }
+    :focus-visible { outline: .18rem solid #257550; outline-offset: .25rem; }
+    .art { margin: 0; min-height: 20rem; overflow: hidden; display: grid; place-items: center; background: radial-gradient(ellipse at 43% 30%, #e9edcf, #ced9c4 56%, #aabca9); border-radius: .85rem; }
+    .glasses { position: relative; isolation: isolate; width: min(85%, 30rem); aspect-ratio: 2.45; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 9%; transform: rotate(-8deg); }
+    .glasses::before { position: absolute; content: ""; width: 19%; height: 24%; top: 34%; left: 41%; border-top: .48rem solid #273830; border-radius: 50%; z-index: -1; }
+    .glasses::after { position: absolute; content: ""; inset: 34% -5% auto; height: .6rem; background: #35453d; border-radius: 100%; z-index: -1; }
+    .lens { aspect-ratio: 1.26; border: clamp(.38rem, 1vw, .7rem) solid #273830; border-radius: 26% 25% 40% 35%; background: linear-gradient(155deg, #eff3d9 8%, #d0dec7 40%, #9cb6a5 67%, #c5d7c0 68%); box-shadow: inset 0 0 0 .09rem #607467, 0 .18rem .25rem #27383055; }
+    .lens:last-child { transform: scaleX(-1); }
+    .benefits { display: grid; grid-template-columns: repeat(4, 1fr); border-block-start: 1px solid var(--line); }
+    .benefits article { padding-block: 1.5rem; padding-inline-end: 1rem; }
+    .benefits article + article { border-inline-start: 1px solid var(--line); padding-inline-start: 1.25rem; }
+    h3 { line-height: 1.25; font-size: 1.03rem; margin-bottom: .45rem; }
+    .benefits p { color: var(--muted); font-size: .95rem; }
+    .demo { padding-block: clamp(2.5rem, 7vw, 5.5rem); }
+    .demo-inner { background: var(--green); color: #f6f7ea; border-radius: .85rem; padding: clamp(1.2rem, 5.5vw, 4.2rem); }
+    .demo p { margin-top: .8rem; }
+    .scenarios { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.5rem; }
+    button { background: transparent; color: inherit; border: 1px solid #a3b7a7; border-radius: .3rem; padding: .6rem .9rem; min-height: 2.75rem; font: inherit; font-weight: 650; cursor: pointer; }
+    button[aria-pressed="true"] { background: #e0ecc7; border-color: #e0ecc7; color: #193629; }
+    button:hover { box-shadow: inset 0 0 0 1px currentColor; }
+    button:focus-visible { outline-color: #e0ecc7; }
+    .display { min-height: 8rem; display: grid; place-items: center; margin-top: 1rem; padding: 1rem; border: 1px solid #769686; border-radius: .75rem; background: radial-gradient(ellipse at center, #34594a, #142e26); text-align: center; }
+    .display p { margin: 0; color: #edf6d7; font-weight: 700; font-size: clamp(1rem, 3.2vw, 1.65rem); }
+    .demo .note { color: #e0eadd; font-size: .9rem; max-width: 65ch; }
+    @media (max-width: 58rem) {
+      .benefits { grid-template-columns: repeat(2, 1fr); }
+      .benefits article:nth-child(odd) { padding-inline-start: 0; border-inline-start: 0; }
+      .benefits article:nth-child(n+3) { border-block-start: 1px solid var(--line); }
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
+    @media (max-width: 42rem) {
+      .hero { grid-template-columns: 1fr; }
+      .art { min-height: 14rem; }
     }
-    .container { max-width: 1040px; margin: 0 auto; padding: 2rem 1.5rem; }
-    header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding-bottom: 2rem; border-bottom: 1px solid var(--surface-light);
-    }
-    .brand { font-weight: 700; font-size: 1.15rem; letter-spacing: 0.04em; color: var(--accent); }
-    .badge {
-      background: rgba(56, 189, 248, 0.15); color: var(--accent);
-      padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.8rem; font-weight: 600;
-    }
-    .hero { padding: 4rem 0 3rem; text-align: center; }
-    .hero h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 1.15; margin-bottom: 1rem; }
-    .hero p { max-width: 680px; margin: 0 auto 2rem; color: var(--muted); font-size: 1.1rem; }
-    .cta-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-    .btn {
-      padding: 0.85rem 1.5rem; border-radius: 0.5rem; font-weight: 600;
-      text-decoration: none; cursor: pointer; border: none; font-size: 0.95rem;
-    }
-    .btn-primary { background: var(--accent); color: #0f172a; }
-    .btn-primary:hover { background: #7dd3fc; }
-    .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--surface-light); }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 3rem 0; }
-    .card {
-      background: var(--surface); padding: 1.75rem; border-radius: 0.75rem;
-      border: 1px solid var(--surface-light);
-    }
-    .card h3 { margin-bottom: 0.65rem; font-size: 1.15rem; color: var(--accent); }
-    .card p { color: var(--muted); font-size: 0.95rem; }
-    .interactive-box {
-      background: var(--surface); border: 1px solid var(--surface-light);
-      border-radius: 0.75rem; padding: 2rem; margin: 3rem 0;
-    }
-    .toggle-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin: 1.25rem 0; }
-    .mode-btn {
-      padding: 0.6rem 1.1rem; border-radius: 0.4rem; border: 1px solid var(--surface-light);
-      background: var(--bg); color: var(--text); cursor: pointer; font-weight: 500;
-    }
-    .mode-btn.active { border-color: var(--accent); background: rgba(56, 189, 248, 0.15); color: var(--accent); }
-    .status-banner {
-      padding: 1rem 1.25rem; border-radius: 0.5rem; background: var(--bg);
-      border-left: 4px solid var(--success); font-size: 0.95rem;
-    }
-    form { display: grid; gap: 1rem; max-width: 520px; margin-top: 1.25rem; }
-    input, select {
-      width: 100%; padding: 0.75rem 1rem; border-radius: 0.4rem;
-      border: 1px solid var(--surface-light); background: var(--bg); color: var(--text);
-    }
-    .form-feedback { margin-top: 0.75rem; color: var(--success); font-weight: 500; min-height: 1.4rem; }
-    footer {
-      margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--surface-light);
-      color: var(--muted); font-size: 0.85rem;
+    @media (max-width: 25rem) {
+      .wrap { width: calc(100% - 2rem); }
+      .benefits { grid-template-columns: 1fr; }
+      .benefits article + article { border-block-start: 1px solid var(--line); border-inline-start: 0; padding-inline-start: 0; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="brand">KLARSICHT OPTICS DE</div>
-      <span class="badge">Privacy-by-Design Prototype</span>
-    </header>
-
-    <section class="hero">
-      <h1>Klare Sicht. Volle Kontrolle.</h1>
-      <p>Freihändige KI-Assistenz, Live-Übersetzung und visuelle Unterstützung – entwickelt mit sichtbaren Aufnahme-Indikatoren, Hardware-Datenschutzkontrollen und klaren Datengrenzen für Deutschland.</p>
-      <div class="cta-group">
-        <a href="#pilot" class="btn btn-primary">Pilotprojekt anfragen</a>
-        <a href="#privacy-demo" class="btn btn-secondary">Datenschutz-Architektur entdecken</a>
+  <header>
+    <div class="wrap bar">
+      <span class="brand">Taktblick</span>
+      <span class="status">Konzeptdemo</span>
+    </div>
+  </header>
+  <main class="wrap">
+    <section class="hero" aria-labelledby="title">
+      <div>
+        <h1 id="title">Dein nächster Schritt im Blick.</h1>
+        <p class="intro">Taktblick ist das Konzept einer Displaybrille für deinen Arbeitsweg. Wähle am Smartphone aus, welche kurzen Hinweise du bei Bedarf im Blickfeld sehen möchtest.</p>
+        <a class="action" href="#demo">Demo ansehen</a>
+      </div>
+      <figure class="art" aria-hidden="true">
+        <div class="glasses"><span class="lens"></span><span class="lens"></span></div>
+      </figure>
+    </section>
+    <section class="benefits" aria-label="So ist Taktblick gedacht">
+      <article>
+        <h3>Den Umstieg im Blick</h3>
+        <p>Ein vorbereiteter Hinweis zeigt dir beim Halt, wo es weitergeht.</p>
+      </article>
+      <article>
+        <h3>Den Fußweg im Blick</h3>
+        <p>Blende am Bahnhof einen gespeicherten Wegpunkt für das letzte Stück zu Fuß ein.</p>
+      </article>
+      <article>
+        <h3>Den Termin im Blick</h3>
+        <p>Rufe Zeit und Ort eines Termins auf, den du selbst eingetragen hast.</p>
+      </article>
+      <article>
+        <h3>Eine Fassung ohne Kamera und Mikrofon</h3>
+        <p>Für Taktblick ist eine Fassung ohne Kamera und Mikrofon vorgesehen. Du wählst am Smartphone aus, welche Hinweise die Brille anzeigen soll.</p>
+      </article>
+    </section>
+    <section id="demo" class="demo" aria-labelledby="demo-title">
+      <div class="demo-inner">
+        <h2 id="demo-title">So könnte dein Blickfeld aussehen</h2>
+        <p>Wähle ein Beispiel aus und sieh, wie der Hinweis im Blickfeld erscheinen könnte.</p>
+        <div class="scenarios" role="group" aria-label="Beispiel auswählen">
+          <button type="button" aria-pressed="true" data-message="Nächster Umstieg · Gleis 4">Umstieg</button>
+          <button type="button" aria-pressed="false" data-message="Gespeicherter Wegpunkt · Nordausgang">Fußweg</button>
+          <button type="button" aria-pressed="false" data-message="09:00 Uhr · Besprechung, Raum 2">Termin</button>
+        </div>
+        <div class="display">
+          <p id="demo-message" role="status">Nächster Umstieg · Gleis 4</p>
+        </div>
+        <p class="note">Die Browserdemo zeigt fiktive Hinweise. Sie bietet keine Live-Navigation und erhebt keine personenbezogenen Daten.</p>
       </div>
     </section>
-
-    <section class="grid">
-      <div class="card">
-        <h3>1. Sichtbare Transparenz statt versteckter Technik</h3>
-        <p>Ein deutlich erkennbarer Status-Indikator signalisiert aktiv, sobald Kamera oder Mikrofon genutzt werden. So bleiben Gespräche im Alltag und im Arbeitsumfeld jederzeit nachvollziehbar.</p>
-      </div>
-      <div class="card">
-        <h3>2. Praktische Unterstützung im Arbeitsalltag</h3>
-        <p>Ob Live-Übersetzung im Kundengespräch, freihändige Checklisten im Einsatz oder schnelle Sprachnotizen unterwegs: Relevante Informationen erscheinen genau dann im Sichtfeld, wenn Sie sie brauchen.</p>
-      </div>
-      <div class="card">
-        <h3>3. Entwickelt für deutsche Datenschutz- und Compliance-Standards</h3>
-        <p>Konfigurierbare Datenflüsse, lokale Verarbeitungsoptionen und transparente Admin-Richtlinien unterstützen Unternehmen bei der DSGVO-konformen Einführung und der Abstimmung mit dem Betriebsrat.</p>
-      </div>
-    </section>
-
-    <section id="privacy-demo" class="interactive-box">
-      <h2>Interaktive Datenschutz-Vorschau</h2>
-      <p style="color: var(--muted); margin-top: 0.4rem;">Testen Sie, wie sich Sensor- und Datenfreigaben je nach Einsatzumgebung steuern lassen:</p>
-      <div class="toggle-row" role="group" aria-label="Datenschutzmodus wählen">
-        <button type="button" class="mode-btn active" data-mode="strict">Modus 1: Nur Anzeige (Sensoren aus)</button>
-        <button type="button" class="mode-btn" data-mode="assist">Modus 2: Lokale Assistenz (LED aktiv)</button>
-        <button type="button" class="mode-btn" data-mode="enterprise">Modus 3: Enterprise-Workflow (Audit-Log)</button>
-      </div>
-      <div id="status-banner" class="status-banner" aria-live="polite">
-        <strong>Status:</strong> Kamera & Mikrofon hardwareseitig getrennt. Keine Aufzeichnung, kein Cloud-Upload.
-      </div>
-    </section>
-
-    <section id="pilot" class="interactive-box">
-      <h2>Pilotprojekt oder Produkt-Briefing anfragen</h2>
-      <p style="color: var(--muted); margin-top: 0.4rem;">Fordern Sie Unterlagen für Ihr Team oder eine Evaluierung im Unternehmenskontext an.</p>
-      <form id="pilot-form">
-        <input type="text" id="company" placeholder="Unternehmen / Organisation" required />
-        <input type="email" id="email" placeholder="Geschäftliche E-Mail-Adresse" required />
-        <select id="usecase">
-          <option value="field-service">Einsatzbereich: Außendienst & Wartung</option>
-          <option value="logistics">Einsatzbereich: Logistik & Produktion</option>
-          <option value="accessibility">Einsatzbereich: Live-Übersetzung & Assistenz</option>
-        </select>
-        <button type="submit" class="btn btn-primary">Unverbindlich anfragen</button>
-      </form>
-      <div id="form-feedback" class="form-feedback" aria-live="polite"></div>
-    </section>
-
-    <footer>
-      <p><strong>Rechtlicher Hinweis:</strong> Technische Schutzfunktionen unterstützen datenschutzkonforme Arbeitsabläufe, ersetzen jedoch nicht die rechtliche Prüfung im jeweiligen Einsatzszenario (insbesondere Informationspflichten nach DSGVO, § 201 StGB sowie betriebliche Mitbestimmung).</p>
-    </footer>
-  </div>
-
+  </main>
+  <footer>
+    <div class="wrap bar"><span class="brand">Taktblick</span><span class="status">Konzept einer Displaybrille</span></div>
+  </footer>
   <script>
-    const modeMessages = {
-      strict: "<strong>Status:</strong> Kamera & Mikrofon hardwareseitig getrennt. Keine Aufzeichnung, kein Cloud-Upload.",
-      assist: "<strong>Status:</strong> Front-LED leuchtet sichtbar. Lokale Sprach- und Übersetzungsverarbeitung ohne KI-Trainingsfreigabe.",
-      enterprise: "<strong>Status:</strong> Richtlinienprofil aktiv. Rollenbasierte Freigabe, protokolliert für interne Datenschutz- und Betriebsratsvorgaben."
-    };
+    const scenarios = document.querySelectorAll('.scenarios button');
+    const demoMessage = document.getElementById('demo-message');
 
-    const buttons = document.querySelectorAll(".mode-btn");
-    const banner = document.getElementById("status-banner");
-
-    buttons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        buttons.forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        banner.innerHTML = modeMessages[btn.dataset.mode];
+    for (const button of scenarios) {
+      button.addEventListener('click', () => {
+        for (const scenario of scenarios) {
+          scenario.setAttribute('aria-pressed', String(scenario === button));
+        }
+        demoMessage.textContent = button.dataset.message;
       });
-    });
-
-    const form = document.getElementById("pilot-form");
-    const feedback = document.getElementById("form-feedback");
-
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const company = document.getElementById("company").value.trim();
-      feedback.textContent = `Vielen Dank! Ihre Pilotanfrage für "${company}" wurde für die Vorschau erfasst.`;
-      form.reset();
-    });
+    }
   </script>
 </body>
 </html>
